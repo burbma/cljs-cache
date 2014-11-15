@@ -2,4 +2,4 @@
 
 ###Currently only TTLCache and BasicCache have been ported
 
-[![Clojars Project](http://clojars.org/com.galebach/cljs-cache/latest-version.svg)]
+![Clojars Project](http://clojars.org/com.galebach/cljs-cache/latest-version.svg)
