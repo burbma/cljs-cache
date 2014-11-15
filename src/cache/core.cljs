@@ -1,4 +1,15 @@
-(ns cache.core
+;   Copyright (c) Rich Hickey. All rights reserved.
+;   The use and distribution terms for this software are covered by the
+;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;   which can be found in the file epl-v10.html at the root of this distribution.
+;   By using this software in any fashion, you are agreeing to be bound by
+;   the terms of this license.
+;   You must not remove this notice, or any other, from this software.
+
+
+(ns ^{:doc "A port of clojure/core.cache to Clojurescript"
+      :author "Timothy Galebach"}
+  cache.core
   (:require [weasel.repl :as ws-repl]))
 
 (enable-console-print!)
@@ -25,6 +36,21 @@
   "Is used to signal that the cache should be created with a seed.
   The contract is that said cache should return an instance of its
   own type."))
+
+(def ^{:private true} default-wrapper-fn #(%1 %2))
+
+(defn through
+  "The basic hit/miss logic for the cache system.  Expects a wrap function and
+  value function.  The wrap function takes the value function and the item in question
+  and is expected to run the value function with the item whenever a cache
+  miss occurs.  The intent is to hide any cache-specific cells from leaking
+  into the cache logic itelf."
+  ([cache item] (through default-wrapper-fn identity cache item))
+  ([value-fn cache item] (through default-wrapper-fn value-fn cache item))
+  ([wrap-fn value-fn cache item]
+    (if (has? cache item)
+      (hit cache item)
+      (miss cache item (wrap-fn #(value-fn %) item)))))
 
 (defn- get-time []
   (.getTime (js/Date.)))
