@@ -11,6 +11,7 @@
       :author "Timothy Galebach"
       :contributors "Matt Burbidge"}
     cache.core
+  (:require [tailrecursion.priority-map :refer [priority-map]])
   (:require-macros [cache.core :refer [defcache]]))
 
 (defprotocol CacheProtocol
@@ -113,6 +114,61 @@
   (toString [_]
     (str cache \, \space ttl \, \space ttl-ms)))
 
+;; LRU Cache
+
+(defn- build-leastness-queue
+  [base limit start-at]
+  (into (priority-map)
+        (concat (take (- limit (count base)) (for [k (range (- limit) 0)] [k k]))
+                (for [[k _] base] [k start-at]))))
+
+
+(defcache LRUCache [cache lru tick limit]
+  CacheProtocol
+  (lookup [_ item]
+    (get cache item))
+  (lookup [_ item not-found]
+    (get cache item not-found))
+  (has? [_ item]
+    (contains? cache item))
+  (hit [_ item]
+    (let [tick+ (inc tick)]
+      (LRUCache. cache
+                 (if (contains? cache item)
+                   (assoc lru item tick+)
+                   lru)
+                 tick+
+                 limit)))
+  (miss [_ item result]
+    (let [tick+ (inc tick)]
+      (if (>= (count lru) limit)
+        (let [k (if (contains? lru item)
+                  item
+                  (first (peek lru))) ;; minimum-key, maybe evict case
+              c (-> cache (dissoc k) (assoc item result))
+              l (-> lru (dissoc k) (assoc item tick+))]
+          (LRUCache. c l tick+ limit))
+        (LRUCache. (assoc cache item result)  ;; no change case
+                   (assoc lru item tick+)
+                   tick+
+                   limit))))
+  (evict [this key]
+    (if (contains? cache key)
+      (LRUCache. (dissoc cache key)
+                 (dissoc lru key)
+                 (inc tick)
+                 limit)
+      this))
+  (seed [_ base]
+    (LRUCache. base
+               (build-leastness-queue base limit 0)
+               0
+               limit))
+  Object
+  (toString [_]
+    (str cache \, \space lru \, \space tick \, \space limit)))
+
+
 ;; Factories
 
 (defn basic-cache-factory
@@ -131,3 +187,13 @@
   {:pre [(number? ttl) (<= 0 ttl)
          (map? base)]}
   (seed (TTLCache. {} {} ttl) base))
+
+(defn lru-cache-factory
+  "Returns an LRU cache with the cache and usage-table initialied to `base` --
+   each entry is initialized with the same usage value.
+   This function takes an optional `:threshold` argument that defines the maximum number
+   of elements in the cache before the LRU semantics apply (default is 32)."
+  [base & {threshold :threshold :or {threshold 32}}]
+  {:pre [(number? threshold) (< 0 threshold)
+         (map? base)]}
+  (seed (LRUCache. {} (priority-map) 0 threshold) base))

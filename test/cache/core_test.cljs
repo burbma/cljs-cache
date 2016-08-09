@@ -1,7 +1,8 @@
 (ns cache.core-test
   (:require [cljs.core.async :refer [chan close! <!]]
             [cljs.test :refer-macros [deftest run-tests testing is are async]]
-            [cache.core :refer [BasicCache TTLCache ttl-cache-factory
+            [cache.core :refer [BasicCache TTLCache LRUCache
+                                ttl-cache-factory lru-cache-factory
                                 lookup has? hit miss evict seed]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
@@ -137,5 +138,70 @@
               (is (nil? (-> C2 (lookup :a)))))
             (done))
          700)))))
+
+(deftest test-lru-cache-ilookup
+  (testing "that the LRUCache can lookup via keywords"
+    (do-ilookup-tests (LRUCache. small-map {} 0 2)))
+  #_(testing "that the LRUCache can lookup via keywords"
+    (do-dot-lookup-tests (LRUCache. small-map {} 0 2)))
+  (testing "assoc and dissoc for LRUCache"
+    (do-the-assoc (LRUCache. {} {} 0 2))
+    (do-dissoc (LRUCache. {:a 1 :b 2} {} 0 2)))
+  (testing "that get and cascading gets work for LRUCache"
+    (do-getting (LRUCache. big-map {} 0 2)))
+  (testing "that finding works for LRUCache"
+    (do-finding (LRUCache. small-map {} 0 2)))
+  (testing "that contains? works for LRUCache"
+    (do-contains (LRUCache. small-map {} 0 2))))
+
+(deftest test-lru-cache
+  (testing "LRU-ness with empty cache and threshold 2"
+    (let [C (lru-cache-factory {} :threshold 2)]
+      (are [x y] (= x y)
+           {:a 1, :b 2} (-> C (assoc :a 1) (assoc :b 2) .-cache)
+           {:b 2, :c 3} (-> C (assoc :a 1) (assoc :b 2) (assoc :c 3) .-cache)
+           {:a 1, :c 3} (-> C (assoc :a 1) (assoc :b 2) (hit :a) (assoc :c 3) .-cache))))
+  (testing "LRU-ness with seeded cache and threshold 4"
+    (let [C (lru-cache-factory {:a 1, :b 2} :threshold 4)]
+      (are [x y] (= x y)
+           {:a 1, :b 2, :c 3, :d 4} (-> C (assoc :c 3) (assoc :d 4) .-cache)
+           {:a 1, :c 3, :d 4, :e 5} (-> C (assoc :c 3) (assoc :d 4) (hit :c) (hit :a) (assoc :e 5) .-cache))))
+  (testing "regressions against LRU eviction before threshold met"
+    (is (= {:b 3 :a 4}
+           (-> (lru-cache-factory {} :threshold 2)
+               (assoc :a 1)
+               (assoc :b 2)
+               (assoc :b 3)
+               (assoc :a 4)
+               .-cache)))
+
+    (is (= {:e 6, :d 5, :c 4}
+           (-> (lru-cache-factory {} :threshold 3)
+               (assoc :a 1)
+               (assoc :b 2)
+               (assoc :b 3)
+               (assoc :c 4)
+               (assoc :d 5)
+               (assoc :e 6)
+               .-cache)))
+
+    (is (= {:a 1 :b 3}
+           (-> (lru-cache-factory {} :threshold 2)
+               (assoc :a 1)
+               (assoc :b 2)
+               (assoc :b 3)
+               .-cache))))
+
+  (is (= {:d 4 :e 5}
+         (-> (lru-cache-factory {} :threshold 2)
+             (hit :x)
+             (hit :y)
+             (hit :z)
+             (assoc :a 1)
+             (assoc :b 2)
+             (assoc :c 3)
+             (assoc :d 4)
+             (assoc :e 5)
+             .-cache))))
 
 (run-tests)

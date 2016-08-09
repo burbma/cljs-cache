@@ -13,6 +13,7 @@
                  [adzerk/boot-cljs-repl "0.3.2" :scope "test"]
                  [adzerk/boot-reload "0.4.11" :scope "test"]
                  [com.cemerick/piggieback "0.2.1" :scope "test"]     ;; needed by bREPL
+                 [tailrecursion/cljs-priority-map "1.2.0"]
                  [weasel "0.7.0" :scope "test"]                      ;; needed by bREPL
                  ])
 
