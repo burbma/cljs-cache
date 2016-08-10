@@ -10,6 +10,7 @@
 
                  [adzerk/boot-cljs "1.7.228-1" :scope "test"]
                  [adzerk/boot-cljs-repl "0.3.2" :scope "test"]
+                 [adzerk/bootlaces "0.1.13" :scope "test"]
                  [adzerk/boot-reload "0.4.11" :scope "test"]
                  [adzerk/boot-test "1.1.2"]
                  [com.cemerick/piggieback "0.2.1" :scope "test"]     ;; needed by bREPL
@@ -21,10 +22,25 @@
 
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl cljs-repl-env start-repl]]
+         '[adzerk.bootlaces :refer :all]
          '[adzerk.boot-reload :refer [reload]]
          '[crisptrutski.boot-cljs-test :refer [test-cljs exit!]]
          '[clojure.tools.namespace.repl :refer [set-refresh-dirs]]
          '[pandeiro.boot-http :refer [serve]])
+
+
+(def +version+ "0.1.3-SNAPSHOT")
+
+(bootlaces! +version+)
+
+(task-options!
+ pom {:project     'org.clojars.mmb90/cljs-cache
+      :version     +version+
+      :description "Port of clorjure/core.cache"
+      :url         "https://github.com/mmb90/cljs-cache"
+      :scm         {:url "https://github.com/mmb90/cljs-cache"}
+      :license     {"Eclipse Public License 1.0"
+                    "http://opensource.org/licenses/eclipse-1.0.php"}})
 
 (deftask testing
   "Conj test path to environment."
