@@ -2,7 +2,7 @@
 
 Currently only BasicCache, TTLCache, and LRUCache have been ported.
 
-![Clojars Project](http://clojars.org/org.clojars.mmb90/cljs-cache/latest-version.svg)
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.mmb90/cljs-cache.svg)](https://clojars.org/org.clojars.mmb90/cljs-cache)
 
 ## License ##
 
