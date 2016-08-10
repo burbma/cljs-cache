@@ -203,5 +203,3 @@
              (assoc :d 4)
              (assoc :e 5)
              .-cache))))
-
-(run-tests)
