@@ -10,9 +10,9 @@
 (ns ^{:doc "A port of clojure/core.cache to Clojurescript"
       :author "Timothy Galebach"
       :contributors "Matt Burbidge"}
-    cache.core
+    cljs.cache
   (:require [tailrecursion.priority-map :refer [priority-map]])
-  (:require-macros [cache.core :refer [defcache]]))
+  (:require-macros [cljs.cache :refer [defcache]]))
 
 (defprotocol CacheProtocol
   "This is the protocol describing the basic cache capability."

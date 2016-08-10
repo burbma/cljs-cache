@@ -6,7 +6,7 @@
 ;   the terms of this license.
 ;   You must not remove this notice, or any other, from this software.
 
-(ns cache.core)
+(ns cljs.cache)
 
 (defmacro defcache
   [type-name fields & specifics]

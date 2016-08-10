@@ -6,10 +6,10 @@
 ;   the terms of this license.
 ;   You must not remove this notice, or any other, from this software.
 
-(ns cache.core-test
+(ns cljs.cache-test
   (:require [cljs.core.async :refer [chan close! <!]]
             [cljs.test :refer-macros [deftest run-tests testing is are async]]
-            [cache.core :refer [BasicCache TTLCache LRUCache
+            [cljs.cache :refer [BasicCache TTLCache LRUCache
                                 ttl-cache-factory lru-cache-factory
                                 lookup has? hit miss evict seed]])
   (:require-macros [cljs.core.async.macros :refer [go]]))

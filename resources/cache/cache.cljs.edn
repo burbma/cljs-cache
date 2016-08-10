@@ -1,1 +1,1 @@
-{:require [cache.core_test]}
+{:require [cljs.cache_test]}
