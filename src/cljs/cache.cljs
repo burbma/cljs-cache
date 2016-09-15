@@ -8,8 +8,7 @@
 
 
 (ns ^{:doc "A port of clojure/core.cache to Clojurescript"
-      :author "Timothy Galebach"
-      :contributors "Matt Burbidge"}
+      :author "Matt Burbidge"}
     cljs.cache
   (:require [tailrecursion.priority-map :refer [priority-map]])
   (:require-macros [cljs.cache :refer [defcache]]))
