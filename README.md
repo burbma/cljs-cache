@@ -1,4 +1,4 @@
-#cljs.cache : Clojurescript port of clojure/core.cache
+# cljs.cache : Clojurescript port of clojure/core.cache
 
 [![Clojars Project](https://img.shields.io/clojars/v/org.clojars.mmb90/cljs-cache.svg)](https://clojars.org/org.clojars.mmb90/cljs-cache)
 
@@ -13,7 +13,7 @@
   
 * Factory functions for each existing cache type
 
-##Example Usage
+## Example Usage
 
 ```clojure
     (require '[cljs.cache :as cache])
