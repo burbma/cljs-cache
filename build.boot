@@ -16,7 +16,7 @@
                  [com.cemerick/piggieback "0.2.1" :scope "test"]     ;; needed by bREPL
                  [crisptrutski/boot-cljs-test "0.2.2-SNAPSHOT"]
                  [pandeiro/boot-http "0.7.3" :scope "test"]
-                 [tailrecursion/cljs-priority-map "1.2.0"]
+                 [tailrecursion/cljs-priority-map "1.2.1"]
                  [weasel "0.7.0" :scope "test"]                      ;; needed by bREPL
                  ])
 
