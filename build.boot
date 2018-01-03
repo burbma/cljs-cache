@@ -29,7 +29,7 @@
          '[pandeiro.boot-http :refer [serve]])
 
 
-(def +version+ "0.1.3-SNAPSHOT")
+(def +version+ "0.1.4")
 
 (bootlaces! +version+)
 
@@ -37,8 +37,8 @@
  pom {:project     'org.clojars.mmb90/cljs-cache
       :version     +version+
       :description "Port of clorjure/core.cache"
-      :url         "https://github.com/mmb90/cljs-cache"
-      :scm         {:url "https://github.com/mmb90/cljs-cache"}
+      :url         "https://github.com/burbma/cljs-cache"
+      :scm         {:url "https://github.com/burbma/cljs-cache"}
       :license     {"Eclipse Public License 1.0"
                     "http://opensource.org/licenses/eclipse-1.0.php"}})
 
