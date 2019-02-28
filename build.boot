@@ -3,7 +3,6 @@
  :resource-paths #{"resources"}
 
  :dependencies '[[org.clojure/clojure "1.9.0-alpha10"]
-                 [org.clojure/core.async "0.2.385"]
                  [org.clojure/clojurescript "1.9.89"]
                  [org.clojure/tools.namespace "0.2.11" :scope "test"]
                  [org.clojure/tools.nrepl "0.2.12" :scope "test"]    ;; needed by bREPL
