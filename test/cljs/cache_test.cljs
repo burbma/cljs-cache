@@ -7,12 +7,10 @@
 ;   You must not remove this notice, or any other, from this software.
 
 (ns cljs.cache-test
-  (:require [cljs.core.async :refer [chan close! <!]]
-            [cljs.test :refer-macros [deftest run-tests testing is are async]]
-            [cljs.cache :refer [BasicCache TTLCache LRUCache
+  (:require [cljs.cache :refer [BasicCache TTLCache LRUCache
                                 ttl-cache-factory lru-cache-factory
-                                lookup has? hit miss evict seed]])
-  (:require-macros [cljs.core.async.macros :refer [go]]))
+                                lookup has? hit miss evict seed]]
+            [cljs.test :refer-macros [deftest run-tests testing is are async]]))
 
 (enable-console-print!)
 
