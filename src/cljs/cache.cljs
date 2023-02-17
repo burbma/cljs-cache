@@ -50,6 +50,16 @@
      (hit cache item)
      (miss cache item (wrap-fn #(value-fn %) item)))))
 
+(defn through-cache
+  "The basic hit/miss logic for the cache system.  Like through but always has
+  the cache argument in the first position for easier use with swap! etc."
+  ([cache item] (through-cache cache item default-wrapper-fn identity))
+  ([cache item value-fn] (through-cache cache item default-wrapper-fn value-fn))
+  ([cache item wrap-fn value-fn]
+   (if (has? cache item)
+     (hit cache item)
+     (miss cache item (wrap-fn #(value-fn %) item)))))
+
 (defcache BasicCache [cache]
   CacheProtocol
   (lookup [_ item]
